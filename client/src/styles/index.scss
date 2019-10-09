@@ -1,0 +1,25 @@
+@import '~bootstrap/scss/bootstrap.scss';
+
+/* Made with love by Mutiullah Samim*/
+
+@import url('https://fonts.googleapis.com/css?family=Numans');
+
+html,body{
+  font-family: 'Numans', sans-serif;
+  background: black;
+}
+
+.is-100-height {
+  height: 100vh;
+}
+
+.card{
+  height: 370px;
+  margin-top: auto;
+  margin-bottom: auto;
+  width: 400px;
+  background:black;
+  border: 1px solid rgba(0,0,0,0.2)
+}
+
+

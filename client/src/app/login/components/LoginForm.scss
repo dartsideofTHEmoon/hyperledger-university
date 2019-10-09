@@ -1,0 +1,16 @@
+.input-group-prepend span{
+  width: 50px;
+  background-color: rgba(255,255,255,0.1);
+  color: white;
+  border:0;
+}
+
+.login-btn{
+  color: black;
+  background-color: white;
+  width: 100px;
+
+  &:hover {
+    background-color: rgba(255,255,255,0.9);
+  }
+}
