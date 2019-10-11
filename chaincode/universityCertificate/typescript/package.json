@@ -1,0 +1,17 @@
+{
+  "name": "University Certificate",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "engineStrict": true,
+  "dependencies": {
+    "fabric-contract-api": "^1.4.2",
+    "fabric-shim": "^1.4.2",
+    "typescript": "^3.6.3"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "fabric-chaincode-node start",
+    "prepublishOnly": "npm run build"
+  }
+}
