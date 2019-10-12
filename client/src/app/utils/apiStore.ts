@@ -41,3 +41,4 @@ class ObjectStore<T> {
 
 export const apiTokenStore = new StringStore('notaryApiToken')
 export const apiUserStore = new ObjectStore<any>('notaryApiUser')
+export const apiWalletStore = new ObjectStore<any>('notaryFabricWallet')

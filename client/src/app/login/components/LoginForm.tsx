@@ -3,8 +3,9 @@ import "./LoginForm.scss";
 import {HttpResponse, HttpStatus} from "../../utils/api";
 import {useState} from "react";
 import {useInput} from "../../utils/input";
-import {apiTokenStore, apiUserStore} from "../../utils/apiStore";
+import {apiTokenStore, apiUserStore, apiWalletStore} from "../../utils/apiStore";
 import {Redirect} from "react-router";
+import {InMemoryWallet} from "fabric-network";
 
 interface LoginFormProps {
     login: (email: string, password: string) => Promise<HttpResponse>
@@ -27,6 +28,10 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
         if (response && response.status === HttpStatus.OK) {
             apiTokenStore.set(response.data.token)
             apiUserStore.set(response.data.user)
+            //const wallet = new InMemoryWallet()
+            //await wallet.import(email as string, response.data.identity)
+            //console.log(wallet)
+            apiWalletStore.set(response.data.identity)
             return toggleRedirect(true)
         }
         return setLoginError("Wrong credentials or error during login process.")

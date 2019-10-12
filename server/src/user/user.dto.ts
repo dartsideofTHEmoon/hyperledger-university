@@ -1,5 +1,6 @@
 import {IsDefined, IsEmail, IsString} from "class-validator";
 import {User} from "./user.entity";
+import {Identity} from "fabric-network";
 
 export class UserCredentialsDto {
 
@@ -35,8 +36,11 @@ export class LoginUserResponse {
 
     user: AuthUserResponse
 
-    constructor(token: string, user: User) {
+    identity: Identity
+
+    constructor(token: string, user: User, identity: Identity) {
         this.user = new AuthUserResponse(user)
         this.token = token
+        this.identity = identity
     }
 }

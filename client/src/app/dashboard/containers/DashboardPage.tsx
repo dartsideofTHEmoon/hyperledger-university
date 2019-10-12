@@ -2,10 +2,9 @@ import * as React from 'react';
 import Nav from "../../layout/components/Nav";
 import Hero from "../../layout/components/Hero";
 import "./DashboardPage.scss";
-import {apiTokenStore} from "../../utils/apiStore";
 import {Redirect} from "react-router";
 import isAuthenticated from "../../utils/isAuthenticated";
-import {useEffect} from "react";
+import {queryCertificates} from "../dashboardApi";
 
 interface DashboardPageProps {
 
@@ -17,6 +16,10 @@ const DashboardPage: React.FC<DashboardPageProps> = (props) => {
     //in real life we would like to have wrapper
     //validating user jwt token.
     if (!isAuthenticated()) return <Redirect to={`/`}/>
+    const certificates = async () => {
+        const certs = await queryCertificates()
+        console.log(certs)
+    }
 
     return (
         <React.Fragment>
@@ -30,7 +33,7 @@ const DashboardPage: React.FC<DashboardPageProps> = (props) => {
                     <div className="card-deck my-3 text-center">
                         <div className="card mb-4 shadow-sm">
                             <div className="card-header">
-                                <h4 className="my-0 font-weight-normal">Free</h4>
+                                <h4 className="my-0 font-weight-normal" onClick={certificates}>Free</h4>
                             </div>
                             <div className="card-body">
                                 <h1 className="card-title pricing-card-title">$0 <small className="text-muted">/
