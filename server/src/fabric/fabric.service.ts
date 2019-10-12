@@ -23,7 +23,7 @@ export class FabricService {
         return !!await this.wallet.exists(identityName)
     }
 
-    async connectAsIdentity(identityName: string): Promise<void> {
+    async connectAsIdentity(identityName: string): Promise<Gateway> {
         if (!this.identityExists(identityName)) {
             throw new Error(`${identityName} identity does not exists.`)
         }
@@ -34,7 +34,8 @@ export class FabricService {
             discovery: {enabled: false}
         }
 
-        return await this.fabricGateway.connect(this.connectionProfile, connectionOptions);
+        await this.fabricGateway.connect(this.connectionProfile, connectionOptions);
+        return this.fabricGateway
     }
 
     async createIdentity(email: string, role: string, affiliation: string): Promise<Identity> {
@@ -88,6 +89,4 @@ export class FabricService {
     async closeConnection(): Promise<void> {
         await this.fabricGateway.disconnect()
     }
-
-
 }

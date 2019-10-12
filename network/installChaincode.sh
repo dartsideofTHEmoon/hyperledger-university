@@ -3,4 +3,4 @@ docker exec cli peer chaincode install -n universityCertificate -v 0 -p /opt/gop
 
 docker exec cli peer chaincode instantiate -n universityCertificate -v 0 -C mychannel -l "node" -c '{"Args":[]}'
 
-docker exec cli peer chaincode invoke -n universityCertificate -C mychannel -c '{"Args":["createCertificate", "certificate123", "unknown" , "timestamp"]}'
+docker exec cli peer chaincode invoke -n universityCertificate -C mychannel -c '{"Args":["getCertificate", "certificate123"]}'
