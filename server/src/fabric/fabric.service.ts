@@ -39,6 +39,25 @@ export class FabricService {
         return this.fabricGateway
     }
 
+    /**
+     * Assertion that we are using default channel "mychannel", default orderer, and university organisation peer,
+     * in real life we would like to take those params from configuration files or client requests depends on business needs
+     */
+    async configureDefaultChannel() {
+        const mspId = 'Org1MSP'
+        const channelId = 'mychannel'
+        const client = new Client()
+        const channel = client.newChannel(channelId)
+
+        const peer = client.newPeer('grpc://localhost:7051')
+
+        const orderer = client.newOrderer('grpc://localhost:7050')
+
+        channel.addPeer(peer, mspId)
+        channel.addOrderer(orderer)
+        return {channel, peer}
+    }
+
     async createIdentity(email: string, role: string, affiliation: string): Promise<Identity> {
         try {
             if (await this.identityExists(email)) {
@@ -88,38 +107,20 @@ export class FabricService {
     }
 
     async generateUnsignedProposal(transactionProposal, certificate) {
-        const mspId = 'Org1MSP'
-        const channelId = 'mychannel'
-        const client = new Client()
-        const channel = client.newChannel(channelId)
+        try {
+            const {channel} = await this.configureDefaultChannel()
 
-        const peer = client.newPeer(
-            'grpc://localhost:7051')
-
-        const orderer = client.newOrderer(
-            'grpc://localhost:7050')
-
-        channel.addPeer(peer, mspId)
-        channel.addOrderer(orderer)
-
-        const proposal: Proposal = await channel.generateUnsignedProposal(transactionProposal, mspId, certificate, false)
-        channel.close()
-        return proposal
+            const proposal: Proposal = await channel.generateUnsignedProposal(transactionProposal, 'Org1MSP', certificate, false)
+            channel.close()
+            return proposal
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     async sendSignedTransactionProposal(signedProposal: any) {
         try {
-            const mspId = 'Org1MSP'
-            const channelId = 'mychannel'
-            const client = new Client()
-            const channel = client.newChannel(channelId)
-
-            const peer = client.newPeer('grpc://localhost:7051')
-
-            const orderer = client.newOrderer('grpc://localhost:7050')
-
-            channel.addPeer(peer, mspId)
-            channel.addOrderer(orderer)
+            const {channel, peer} = await this.configureDefaultChannel()
 
             const targets = [peer]
             const sendSignedProposalReq = {signedProposal, targets}
@@ -133,17 +134,8 @@ export class FabricService {
 
     async commitProposal(commit: any) {
         try {
-            const mspId = 'Org1MSP'
-            const channelId = 'mychannel'
-            const client = new Client()
-            const channel = client.newChannel(channelId)
+            const {channel} = await this.configureDefaultChannel()
 
-            const peer = client.newPeer('grpc://localhost:7051')
-
-            const orderer = client.newOrderer('grpc://localhost:7050')
-
-            channel.addPeer(peer, mspId)
-            channel.addOrderer(orderer)
             const result = await channel.generateUnsignedTransaction(commit);
             channel.close()
             return result
@@ -154,17 +146,8 @@ export class FabricService {
 
     async sendSignedTransaction(request: any, signedTransaction: any) {
         try {
-            const mspId = 'Org1MSP'
-            const channelId = 'mychannel'
-            const client = new Client()
-            const channel = client.newChannel(channelId)
+            const {channel} = await this.configureDefaultChannel()
 
-            const peer = client.newPeer('grpc://localhost:7051')
-
-            const orderer = client.newOrderer('grpc://localhost:7050')
-
-            channel.addPeer(peer, mspId)
-            channel.addOrderer(orderer)
             const result = await channel.sendSignedTransaction(signedTransaction, request);
             channel.close()
             return result

@@ -17,7 +17,7 @@ const CertificatePage: React.FC<CertificatePageProps> = () => {
         const {transactionProposal, certificate} = await createProposal()
         const proposalResponse = await generateProposal(transactionProposal, certificate)
         setProposal(proposalResponse)
-        const signedProposal = await signWithPrivateKey(Buffer.from(JSON.stringify(proposal.data.unsignedProposal)))
+        const signedProposal = await signWithPrivateKey(Buffer.from(JSON.stringify(proposal)))
         const signedProposalResponses: any = await sendSignedProposal(signedProposal)
 
         //Here check if responses are valid
@@ -45,6 +45,5 @@ const CertificatePage: React.FC<CertificatePageProps> = () => {
         </div>
     )
 }
-
 
 export default CertificatePage
