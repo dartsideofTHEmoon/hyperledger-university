@@ -1,6 +1,21 @@
 export interface UniversityCertificate {
-    readonly certificateId: string
-    readonly status: string
-    readonly timestamp: string
+    certificateId: string
+    participantName: string
+    universityId: string
+    status: UniversityCertificateStatus
+    isValidated: boolean
+    timestamp: string
+    validationContract: UniversityCertificateValidationContract
 }
 
+export enum UniversityCertificateStatus {
+    VALIDATED = 'validated',
+    TO_BE_VALIDATED = 'to_be_validated',
+    REJECTED = 'rejected'
+}
+
+export interface UniversityCertificateValidationContract {
+    notaryId: string
+    universityId: string
+    reporterId: string
+}

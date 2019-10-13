@@ -3,6 +3,7 @@ import {FileSystemWallet, Gateway, Identity, Wallet, X509WalletMixin} from "fabr
 import * as path from "path";
 import * as fs from "fs";
 import FabricCAServices from "fabric-ca-client";
+import Client, {Proposal} from "fabric-client";
 
 @Injectable()
 export class FabricService {
@@ -83,6 +84,92 @@ export class FabricService {
         } catch (e) {
             console.warn(e.message)
             throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR)
+        }
+    }
+
+    async generateUnsignedProposal(transactionProposal, certificate) {
+        const mspId = 'Org1MSP'
+        const channelId = 'mychannel'
+        const client = new Client()
+        const channel = client.newChannel(channelId)
+
+        const peer = client.newPeer(
+            'grpc://localhost:7051')
+
+        const orderer = client.newOrderer(
+            'grpc://localhost:7050')
+
+        channel.addPeer(peer, mspId)
+        channel.addOrderer(orderer)
+
+        const proposal: Proposal = await channel.generateUnsignedProposal(transactionProposal, mspId, certificate, false)
+        channel.close()
+        return proposal
+    }
+
+    async sendSignedTransactionProposal(signedProposal: any) {
+        try {
+            const mspId = 'Org1MSP'
+            const channelId = 'mychannel'
+            const client = new Client()
+            const channel = client.newChannel(channelId)
+
+            const peer = client.newPeer('grpc://localhost:7051')
+
+            const orderer = client.newOrderer('grpc://localhost:7050')
+
+            channel.addPeer(peer, mspId)
+            channel.addOrderer(orderer)
+
+            const targets = [peer]
+            const sendSignedProposalReq = {signedProposal, targets}
+            const result = await channel.sendSignedProposal(sendSignedProposalReq)
+            channel.close()
+            return result
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    async commitProposal(commit: any) {
+        try {
+            const mspId = 'Org1MSP'
+            const channelId = 'mychannel'
+            const client = new Client()
+            const channel = client.newChannel(channelId)
+
+            const peer = client.newPeer('grpc://localhost:7051')
+
+            const orderer = client.newOrderer('grpc://localhost:7050')
+
+            channel.addPeer(peer, mspId)
+            channel.addOrderer(orderer)
+            const result = await channel.generateUnsignedTransaction(commit);
+            channel.close()
+            return result
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    async sendSignedTransaction(request: any, signedTransaction: any) {
+        try {
+            const mspId = 'Org1MSP'
+            const channelId = 'mychannel'
+            const client = new Client()
+            const channel = client.newChannel(channelId)
+
+            const peer = client.newPeer('grpc://localhost:7051')
+
+            const orderer = client.newOrderer('grpc://localhost:7050')
+
+            channel.addPeer(peer, mspId)
+            channel.addOrderer(orderer)
+            const result = await channel.sendSignedTransaction(signedTransaction, request);
+            channel.close()
+            return result
+        } catch (e) {
+            console.log(e)
         }
     }
 

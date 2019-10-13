@@ -1,5 +1,6 @@
-export enum UniversityCertificate {
-    getCertificate = 'getCertificate'
+export enum UniversityCertificateAbi {
+    getCertificate = 'getCertificate',
+    queryCertificatesByNotaryId = 'queryCertificatesByNotaryId'
 }
 
-export const UNIVERSITY_CERTIFICATE = 'universityCertificate'
+export const UNIVERSITY_CERTIFICATE = 'universityCertificate22'

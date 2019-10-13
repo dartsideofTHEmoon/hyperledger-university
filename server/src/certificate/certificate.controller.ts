@@ -5,7 +5,7 @@ import {Response} from "express";
 @Controller("api/certificate")
 export class CertificateController {
     constructor(
-        private readonly certificateService: CertificateService
+        private readonly certificateService: CertificateService,
     ) {}
 
     @Get()

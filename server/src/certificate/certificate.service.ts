@@ -1,7 +1,7 @@
-import {HttpException, HttpStatus, Injectable, Logger} from "@nestjs/common";
-import {FabricService} from "../fabric/fabric.service";
-import {UNIVERSITY_CERTIFICATE, UniversityCertificate} from "./certificate.contract";
-
+import {HttpException, HttpStatus, Injectable, Logger} from "@nestjs/common"
+import {FabricService} from "../fabric/fabric.service"
+import {UNIVERSITY_CERTIFICATE, UniversityCertificateAbi} from "./certificate.contract"
+import Client, {Proposal} from 'fabric-client'
 
 @Injectable()
 export class CertificateService {
@@ -14,20 +14,21 @@ export class CertificateService {
 
     async list() {
         try {
-            const gateway = await this.fabricService.connectAsIdentity('notary3@example.com')
-            const network = await gateway.getNetwork('mychannel');
+            const gateway = await this.fabricService.connectAsIdentity('notary2@example.com')
+            const network = await gateway.getNetwork('mychannel')
 
-            const contract = network.getContract(UNIVERSITY_CERTIFICATE);
-            const certificate = await contract.evaluateTransaction(UniversityCertificate.getCertificate, 'certificate123')
+            const contract = network.getContract(UNIVERSITY_CERTIFICATE)
+            const certificate = await contract.evaluateTransaction(UniversityCertificateAbi.queryCertificatesByNotaryId, 'notary2@example.com')
+
+            const parsedCertificates = JSON.parse(certificate.toString('utf8'))
 
             await this.fabricService.closeConnection()
 
-            return certificate
+            return parsedCertificates
 
         } catch (e) {
             this.logger.error(e.message)
             throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
-
 }

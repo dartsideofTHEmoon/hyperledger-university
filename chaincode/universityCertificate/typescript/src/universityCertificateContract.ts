@@ -1,9 +1,9 @@
 import {Context, Contract} from 'fabric-contract-api';
-import {UniversityCertificate} from "./universityCertificate";
+import {UniversityCertificate, UniversityCertificateStatus} from "./universityCertificate";
 
 export class UniversityCertificateContract extends Contract {
 
-    public async createCertificate(ctx: Context, certificateId: string, status: string, timestamp: string) {
+    public async createCertificate(ctx: Context, certificateId: string, status: UniversityCertificateStatus, timestamp: string) {
         console.info('============= START : Create University Certificate ===========');
 
         if (!certificateId || !status || !timestamp) {
@@ -28,5 +28,21 @@ export class UniversityCertificateContract extends Contract {
         }
         console.log(certificateAsBytes.toString());
         return certificateAsBytes.toString();
+    }
+
+    async queryMarblesByOwner(stub, args, thisClass) {
+
+        if (args.length < 1) {
+            throw new Error('Incorrect number of arguments. Expecting owner name.')
+        }
+
+        let owner = args[0].toLowerCase();
+        let queryString = {};
+        queryString.selector = {};
+        queryString.selector.docType = 'marble';
+        queryString.selector.owner = owner;
+        let method = thisClass['getQueryResultForQueryString'];
+        let queryResults = await method(stub, JSON.stringify(queryString), thisClass);
+        return queryResults; //shim.success(queryResults);
     }
 }

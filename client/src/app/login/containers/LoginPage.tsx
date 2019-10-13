@@ -1,6 +1,7 @@
 import * as React from 'react';
 import LoginForm from "../components/LoginForm";
 import {loginApi} from "../loginApi";
+import "./LoginPage.scss";
 
 interface LoginPageProps {
 
@@ -9,7 +10,7 @@ interface LoginPageProps {
 const LoginPage: React.FC<LoginPageProps> = (props) => {
     return (
         <div className="container">
-            <div className="d-flex justify-content-center align-items-center is-100-height">
+            <div className="d-flex justify-content-center align-items-center is-100-height login">
                 <div className="card">
                     <div className="card-header">
                         <h3 className="text-white">Sign In</h3>
