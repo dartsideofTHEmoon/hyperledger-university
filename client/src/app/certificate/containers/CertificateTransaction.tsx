@@ -5,9 +5,11 @@ import {useState} from "react";
 
 interface CertificatePageProps {
     certificate: any
+    isTransactionSubmitted: any
+    transactionSubmitted: any
 }
 
-const CertificatePage: React.FC<CertificatePageProps> = () => {
+const CertificateTransaction: React.FC<CertificatePageProps> = (props) => {
 
     const [proposal, setProposal] = useState<any>('')
     const [proposalResponses, setProposalResponses] = useState<any>('')
@@ -23,6 +25,7 @@ const CertificatePage: React.FC<CertificatePageProps> = () => {
         //Here check if responses are valid
         isCertificateValid(true)
         setProposalResponses(signedProposalResponses.data.proposalResponse)
+        console.log(certificateValid    )
     }
 
     const executeTransaction = async () => {
@@ -36,14 +39,15 @@ const CertificatePage: React.FC<CertificatePageProps> = () => {
         await sendSignedTransaction(commitReq, signedTransaction)
 
         //Here start listeners for transaction events to validate if transaction was successful
+        props.isTransactionSubmitted(true)
     }
 
     return (
-        <div>
-            <button onClick={generateCertificateProposal}>fff</button>
-            {certificateValid && <button onClick={executeTransaction}>Sign Certificate</button>}
+        <div className={`mt-2`}>
+            {!props.transactionSubmitted && (certificateValid ? (<button type="button" className="mt-2 btn btn-lg btn-block btn-primary" onClick={executeTransaction}>Sign Certificate</button>) :
+                (<button type="button" className="mt-2 btn btn-lg btn-block btn-primary" onClick={generateCertificateProposal}>Validate Certificate</button>))}
         </div>
     )
 }
 
-export default CertificatePage
+export default CertificateTransaction

@@ -21,6 +21,7 @@ const DashboardPage: React.FC<DashboardPageProps> = (props) => {
     const [certificates, setCertificates] = useState<any[]>([])
     const [isLoading, toggleIsLoading] = useState<boolean>(true)
 
+
     useEffect(() => {
         const fetchCertificates = async () => {
             const result = await queryCertificates()
@@ -49,15 +50,6 @@ const DashboardPage: React.FC<DashboardPageProps> = (props) => {
                             return <CertificateCard certificate={certificate}/>
                         })}
                     </div>
-                    <hr className="bg-white"/>
-                <Hero className={`px-3 py-2  mx-auto text-center dashboard-hero`}
-                      title={`Validated certificates`}
-                      content={`New certificates waiting to be confirmed.`}/>
-                <div className="card-deck my-3 text-center">
-                    {certificates && certificates.map((certificate:any) => {
-                        return <CertificateCard certificate={certificate}/>
-                    })}
-                </div>
                     <Footer/>
             </section>
         </React.Fragment>

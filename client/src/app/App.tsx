@@ -4,7 +4,7 @@ import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 
 import LoginPage from "./login/containers/LoginPage";
 import DashboardPage from "./dashboard/containers/DashboardPage";
-import CertificatePage from "./certificate/containers/CertificatePage";
+import CertificateTransaction from "./certificate/containers/CertificateTransaction";
 
 const AppRoutes = () => {
     return (
@@ -12,7 +12,7 @@ const AppRoutes = () => {
             <Switch>
                 <Route exact path="/" component={LoginPage}/>
                 <Route exact path="/dashboard" component={DashboardPage}/>
-                <Route exact path="/certificate/:id" component={CertificatePage}/>
+                <Route exact path="/certificate/:id" component={CertificateTransaction}/>
             </Switch>
         </Router>
     )
