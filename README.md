@@ -61,7 +61,9 @@ notary/server/src/fabric/fabric.service.ts
 # network
 $ ./start.sh
 
-# install chaincode 
+$ docker-compose up -d cli
+
+# install chaincode - execute commands from file one by one
 $ ./installChaincode
 ```
 
@@ -70,6 +72,10 @@ $ ./installChaincode
 ```bash
 # Project root
 $ docker-compose up
+
+# Add user to database
+$ INSERT INTO public.users (id, email, password) VALUES ('64dd1b13-2794-43f7-9252-1c81bfd3b79d', 'notary2@example.com', 'password');
+
 ```
 
 ## Server
