@@ -1,7 +1,6 @@
 import {HttpException, HttpStatus, Injectable, Logger} from "@nestjs/common"
 import {FabricService} from "../fabric/fabric.service"
 import {UNIVERSITY_CERTIFICATE, UniversityCertificateAbi} from "./certificate.contract"
-import Client, {Proposal} from 'fabric-client'
 
 @Injectable()
 export class CertificateService {
@@ -12,19 +11,19 @@ export class CertificateService {
         private readonly fabricService: FabricService
     ) {}
 
-    async list() {
+    async listCertificateProposals() {
         try {
             const gateway = await this.fabricService.connectAsIdentity('notary2@example.com')
             const network = await gateway.getNetwork('mychannel')
 
             const contract = network.getContract(UNIVERSITY_CERTIFICATE)
-            const certificate = await contract.evaluateTransaction(UniversityCertificateAbi.queryCertificatesByNotaryId, 'notary2@example.com')
+            const certificateProposals = await contract.evaluateTransaction(UniversityCertificateAbi.queryCertificateProposals)
 
-            const parsedCertificates = JSON.parse(certificate.toString('utf8'))
+            const parsedCertificateProposals = JSON.parse(certificateProposals.toString('utf8'))
 
             await this.fabricService.closeConnection()
 
-            return parsedCertificates
+            return parsedCertificateProposals
 
         } catch (e) {
             this.logger.error(e.message)

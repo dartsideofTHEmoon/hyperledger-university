@@ -7,28 +7,23 @@ import isAuthenticated from "../../utils/isAuthenticated";
 import {queryCertificates} from "../dashboardApi";
 import {useEffect, useState} from "react";
 import Footer from "../../layout/components/Footer";
-import CertificateCard from "../components/CertificateCard";
+import CertificateProposalCard from "../components/CertificateProposalCard";
 
-
-
-
-interface DashboardPageProps {
-
-}
+interface DashboardPageProps {}
 
 const DashboardPage: React.FC<DashboardPageProps> = (props) => {
 
-    const [certificates, setCertificates] = useState<any[]>([])
+    const [certificateProposals, setCertificateProposals] = useState<any[]>([])
     const [isLoading, toggleIsLoading] = useState<boolean>(true)
 
 
     useEffect(() => {
-        const fetchCertificates = async () => {
+        const fetchCertificateProposals = async () => {
             const result = await queryCertificates()
-            setCertificates(result.data.certificates)
+            setCertificateProposals(result.data.certificates)
             toggleIsLoading(false)
         }
-        fetchCertificates()
+        fetchCertificateProposals()
     }, [])
 
     //This is simplified for demo purposes,
@@ -46,8 +41,8 @@ const DashboardPage: React.FC<DashboardPageProps> = (props) => {
                       title={`Certificates for approval`}
                       content={`New certificates waiting to be confirmed.`}/>
                     <div className="card-deck my-3 text-center">
-                        {certificates && certificates.map((certificate:any) => {
-                            return <CertificateCard certificate={certificate}/>
+                        {certificateProposals && certificateProposals.map((certificateProposal:any) => {
+                            return <CertificateProposalCard certificateProposal={certificateProposal}/>
                         })}
                     </div>
                     <Footer/>

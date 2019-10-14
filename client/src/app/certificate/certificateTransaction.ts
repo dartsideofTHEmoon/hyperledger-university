@@ -1,14 +1,15 @@
 import {apiWalletStore} from "../utils/apiStore";
 import {sign} from "../utils/crypto";
 
-
-export const createProposal = async () => {
+export const createAttestCertificateProposal = async (certificateProposalId: string, certificateId: string) => {
     const certificate = apiWalletStore.get().certificate
 
+    //check if user certificate exists
+
     const transactionProposal = {
-        fcn: 'createCertificate',
-        args: ["certificateId22", "participantName", "universityId", "to_be_validated", "false", "timestamp", "notary2@example.com", "reporterId"],
-        chaincodeId: 'universityCertificate22',
+        fcn: 'attestCertificate',
+        args: [certificateProposalId, certificateId],
+        chaincodeId: 'universityCertificate',
         channelId: 'mychannel',
     }
 

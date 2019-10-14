@@ -1,5 +1,6 @@
 import {Shim} from 'fabric-shim';
 import {UniversityCertificate} from "./universityCertificate";
+import {UniversityCertificateProposal, UniversityCertificateProposalStatus} from "./universityCertificateProposal";
 
 export class UniversityCertificateContract {
 
@@ -29,86 +30,98 @@ export class UniversityCertificateContract {
         }
     }
 
-    async createCertificate(stub, args) {
-        if (args.length != 8) {
-            throw new Error('Incorrect number of arguments. Expecting 2');
-        }
-        //Additional validation
+    /**
+     * Attest certificate based on certificate proposal
+     * @param stub
+     * @param args
+     */
+    async attestCertificate(stub, args) {
+        console.info('============= START : Attest Certificate  ===========')
 
-        const certificateId = args[0]
-        const participantName = args[1]
-        const universityId = args[2]
-        const status = args[3]
-        const isValidated = args[4]
-        const timestamp = args[5]
-        const notaryId = args[6]
-        const reporterId = args[7]
-
-
-        const certificateState = await stub.getState(certificateId)
-        if (certificateState.toString()) {
-            throw new Error('This certificate already exists: ' + certificateId)
+        if (args.length !==2) {
+            throw new Error('Incorrect number of arguments.')
         }
 
-        const universityCertificate = new UniversityCertificate(certificateId, participantName, universityId, status, isValidated, reporterId, notaryId, timestamp)
+        const certificateProposalId = args[0]
+        const certificateId = args[1]
 
-        await stub.putState(certificateId, Buffer.from(JSON.stringify(universityCertificate)));
-        let indexName = 'certificateId~notaryId'
-        let nameOwnerIndex = await stub.createCompositeKey(indexName, [certificateId, notaryId]);
+        const certificateProposalAsBytes = await stub.getState(certificateProposalId)
+        let certificateProposal: UniversityCertificateProposal = JSON.parse(certificateProposalAsBytes)
 
-        await stub.putState(nameOwnerIndex, Buffer.from('\u0000'));
+        if (!certificateProposal ) {
+            throw new Error(  ` Certificate proposal does not exists.` );
+        }
+
+        //Validate if correct organisation and if fileHash is same as original
+        //certificate in university chaincode, if valid create certificate
+
+
+        //Validate if certificate with give certificate exists
+
+        const universityCertificate = new UniversityCertificate(
+            certificateProposal.universityId,
+            certificateProposal.fileHash,
+            certificateProposal.ownerId,
+            new Date().toTimeString()
+        )
+
+        await stub.putState(certificateId, Buffer.from(JSON.stringify(universityCertificate)))
+
+        certificateProposal.status = UniversityCertificateProposalStatus.VALIDATED
+
+        await stub.putState(certificateProposalId, Buffer.from(JSON.stringify(certificateProposal)));
+
+        console.info('============= END : Attest Certificate ===========')
     }
 
-    async initMarble(stub, args, thisClass) {
-        if (args.length != 4) {
-            throw new Error('Incorrect number of arguments. Expecting 4');
-        }
-        // ==== Input sanitation ====
-        console.info('--- start init marble ---')
-        if (args[0].lenth <= 0) {
-            throw new Error('1st argument must be a non-empty string');
-        }
-        if (args[1].lenth <= 0) {
-            throw new Error('2nd argument must be a non-empty string');
-        }
-        if (args[2].lenth <= 0) {
-            throw new Error('3rd argument must be a non-empty string');
-        }
-        if (args[3].lenth <= 0) {
-            throw new Error('4th argument must be a non-empty string');
-        }
-        let marbleName = args[0];
-        let color = args[1].toLowerCase();
-        let owner = args[3].toLowerCase();
-        let size = parseInt(args[2]);
-        if (typeof size !== 'number') {
-            throw new Error('3rd argument must be a numeric string');
+
+    /**
+     * Creates new certificate proposal
+     * @param stub
+     * @param args
+     */
+    async createCertificateProposal(stub, args) {
+        console.info('============= START : Create Certificate Proposal ===========')
+
+        if (args.length !== 4) {
+            throw new Error('Incorrect number of arguments.');
         }
 
-        // ==== Check if marble already exists ====
-        let marbleState = await stub.getState(marbleName);
-        if (marbleState.toString()) {
-            throw new Error('This marble already exists: ' + marbleName);
-        }
+        //Additional validation if certificate proposal exists etc.
 
-        // ==== Create marble object and marshal to JSON ====
-        let marble: any = {};
-        marble.docType = 'marble';
-        marble.name = marbleName;
-        marble.color = color;
-        marble.size = size;
-        marble.owner = owner;
+        const certificateProposalId = args[0]
+        const participiantKey = args[1]
+        const fileHash = args[2]
+        const universityId = args[3]
+        const timestamp = new Date().toTimeString()
 
-        // === Save marble to state ===
-        await stub.putState(marbleName, Buffer.from(JSON.stringify(marble)));
-        let indexName = 'color~name'
-        let colorNameIndexKey = await stub.createCompositeKey(indexName, [marble.color, marble.name]);
-        console.info(colorNameIndexKey);
-        //  Save index entry to state. Only the key name is needed, no need to store a duplicate copy of the marble.
-        //  Note - passing a 'nil' value will effectively delete the key from state, therefore we pass null character as value
-        await stub.putState(colorNameIndexKey, Buffer.from('\u0000'));
-        // ==== Marble saved and indexed. Return success ====
-        console.info('- end init marble');
+        var car = new UniversityCertificateProposal(
+            participiantKey,
+            fileHash,
+            universityId,
+            UniversityCertificateProposalStatus.TO_BE_VALIDATED,
+            timestamp
+        )
+
+        await stub.putState(certificateProposalId, Buffer.from(JSON.stringify(car)));
+        console.info('============= END : Create Certificate Proposal ===========')
+    }
+
+    /**
+     * Returns certificateProposals to be validated
+     * @param stub
+     * @param args
+     * @param thisClass
+     */
+    async queryCertificateProposals(stub, args, thisClass) {
+
+        let queryString: any = {}
+        queryString.selector = {}
+        queryString.selector.status = 2
+        let method = thisClass['getQueryResultForQueryString']
+        let queryResults = await method(stub, JSON.stringify(queryString), thisClass)
+        console.log(queryResults)
+        return queryResults
     }
 
     async getAllResults(iterator, isHistory) {
@@ -156,40 +169,6 @@ export class UniversityCertificateContract {
         let results = await method(resultsIterator, false)
 
         return Buffer.from(JSON.stringify(results))
-    }
-
-    async queryMarblesByOwner(stub, args, thisClass) {
-        //   0
-        // 'bob'
-        if (args.length < 1) {
-            throw new Error('Incorrect number of arguments. Expecting owner name.')
-        }
-
-        let owner = args[0].toLowerCase();
-        let queryString: any = {};
-        queryString.selector = {};
-        queryString.selector.docType = 'marble';
-        queryString.selector.owner = owner;
-        let method = thisClass['getQueryResultForQueryString'];
-        let queryResults = await method(stub, JSON.stringify(queryString), thisClass);
-        return Shim.success(queryResults);
-    }
-
-    async queryCertificatesByNotaryId(stub, args, thisClass) {
-
-        if (args.length !== 1) {
-            throw new Error('Incorrect number of arguments. Expecting notary id.')
-        }
-
-        let notaryId = args[0].toLowerCase()
-        let queryString: any = {}
-        queryString.selector = {}
-        queryString.selector.notaryId = notaryId
-        queryString.selector.isValidated = "false"
-        let method = thisClass['getQueryResultForQueryString']
-        let queryResults = await method(stub, JSON.stringify(queryString), thisClass)
-        console.log(queryResults)
-        return queryResults
     }
 }
 

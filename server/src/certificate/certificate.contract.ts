@@ -1,6 +1,7 @@
 export enum UniversityCertificateAbi {
-    getCertificate = 'getCertificate',
-    queryCertificatesByNotaryId = 'queryCertificatesByNotaryId'
+    createCertificateProposal = 'createCertificateProposal',
+    queryCertificateProposals = 'queryCertificateProposals',
+    attestCertificate = 'attestCertificate'
 }
 
-export const UNIVERSITY_CERTIFICATE = 'universityCertificate22'
+export const UNIVERSITY_CERTIFICATE = 'universityCertificate'

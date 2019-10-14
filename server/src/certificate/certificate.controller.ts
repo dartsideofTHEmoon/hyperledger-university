@@ -9,10 +9,10 @@ export class CertificateController {
     ) {}
 
     @Get()
-    async list(
+    async listCertificateProposals(
         @Res() response: Response,
     ) {
-        const certificates = await this.certificateService.list()
+        const certificates = await this.certificateService.listCertificateProposals()
 
         response.send({certificates})
     }
