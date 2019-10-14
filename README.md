@@ -50,8 +50,11 @@ notary/client/src/app/certificate/containers/CertificateTransaction.tsx
 notary/server/src/fabric/fabric.service.ts
 ```
 
-5. In the application some of the data is hardcoded and the correct types are missing for some classes / objects, this is due to the limited time to complete the task
+5. Certificates for ca, peers were created using the cryptogen tool, and deliberately placed in the repository.
+
+6. In the application some of the data is hardcoded and the correct types are missing for some classes / objects, this is due to the limited time to complete the task.
  
+
 ## Network
 
 ```bash
