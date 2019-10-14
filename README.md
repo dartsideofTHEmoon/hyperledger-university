@@ -35,9 +35,22 @@ notary/server/src/fabric/adminExists.middleware.ts
  
     This is to show the execution of offline requests in the web browser and queries to the hyperledger using the identity stored on server.
     
-    ```notary/server/src/certificate/certificate.service.ts```
+```
+notary/server/src/certificate/certificate.service.ts
+```
 
-    ```notary/client/src/app/certificate/containers/CertificateTransaction.tsx```
+```
+notary/client/src/app/certificate/containers/CertificateTransaction.tsx
+```
+3. Hyperledger network consists of only one organization, ultimately we would like to have an organization for each role in the network.
+
+4. The certificate creation transaction is signed in the web app and sent to the server where it is sent to the appropriate peer, which allows us to track the changes of the certificate in the system database.
+
+```
+notary/server/src/fabric/fabric.service.ts
+```
+
+5. In the application some of the data is hardcoded and the correct types are missing for some classes / objects, this is due to the limited time to complete the task
  
 ## Network
 
