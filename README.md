@@ -20,42 +20,40 @@ The system consists of three participants: `student`, `notary` and `university`.
 
 5. If the copy of the certificate is verified, the notary public signs the transaction with his private key and sends to the orderer, which broadcast information over the network.
 
-## Test
+## Network
 
 ```bash
-# development
+# network
+$ ./start.sh
+
+# install chaincode 
+$ ./installChaincode
+```
+
+## Database
+
+```bash
+# Project root
+$ docker-compose up
+```
+
+## Server
+
+```bash
+# server
+$ nvm use
+$ npm install
 $ npm run start
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+# migrations 
+$ npm run database:migrate
 ```
-
-## Test
+## Client
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+# client
+$ nvm use
+$ npm install
+$ npm run start
 ```
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-  Nest is [MIT licensed](LICENSE).
