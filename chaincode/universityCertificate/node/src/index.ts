@@ -1,6 +1,10 @@
 import {Shim} from 'fabric-shim';
-import {UniversityCertificate} from "./universityCertificate";
-import {UniversityCertificateProposal, UniversityCertificateProposalStatus} from "./universityCertificateProposal";
+import {UNIVERSITY_CERTIFICATE, UniversityCertificate, UniversityCertificateStatus} from "./universityCertificate";
+import {
+    UNIVERSITY_CERTIFICATE_PROPOSAL,
+    UniversityCertificateProposal,
+    UniversityCertificateProposalStatus
+} from "./universityCertificateProposal";
 
 const contract = class UniversityCertificateContract {
 
@@ -45,37 +49,35 @@ const contract = class UniversityCertificateContract {
 
         const certificateProposalId = args[0]
         const certificateId = args[1]
-        console.info("tu dziala")
+
         const certificateProposalAsBytes = await stub.getState(certificateProposalId)
 
         if (!certificateProposalAsBytes.toString()) {
             throw new Error(` Certificate proposal does not exists.`);
         }
-        console.info("tutaj", certificateProposalAsBytes)
         let certificateProposal = JSON.parse(certificateProposalAsBytes.toString())
-        console.info(certificateProposal)
 
         //Validate if correct organisation and if fileHash is same as original
         //certificate in university chaincode, if valid create certificate
 
-
         //Validate if certificate with give certificate exists
 
         const universityCertificate = new UniversityCertificate(
+            UNIVERSITY_CERTIFICATE,
+            UniversityCertificateStatus.ATTESTED,
             certificateProposal.universityId,
             certificateProposal.fileHash,
             certificateProposal.ownerId,
             new Date().toTimeString()
         )
 
-        //await stub.putState(certificateId, Buffer.from(JSON.stringify(universityCertificate)))
-
         certificateProposal.status = UniversityCertificateProposalStatus.VALIDATED
 
-        console.log(certificateProposal, "oloo")
-        let proposalAsBytess = Buffer.from(JSON.stringify("dupa"))
-        console.log(certificateProposalId, "pol")
-        return await stub.putState(certificateProposalId, proposalAsBytess)
+        await stub.putState(certificateId, Buffer.from(JSON.stringify(universityCertificate)))
+
+
+        await stub.putState(certificateProposalId, Buffer.from(JSON.stringify(certificateProposal)))
+
     }
 
     /**
@@ -99,6 +101,7 @@ const contract = class UniversityCertificateContract {
         const timestamp = new Date().toTimeString()
 
         const universityCertificateProposal = new UniversityCertificateProposal(
+            UNIVERSITY_CERTIFICATE_PROPOSAL,
             participiantKey,
             fileHash,
             universityId,
@@ -111,16 +114,40 @@ const contract = class UniversityCertificateContract {
     }
 
     /**
-     * Returns certificateProposals to be validated
+     * Returns certificateProposals by status
      * @param stub
      * @param args
      * @param thisClass
      */
-    async queryCertificateProposals(stub, args, thisClass) {
+    async queryCertificateProposalsByStatus(stub, args, thisClass) {
+
+        if (args.length !== 1) {
+            throw new Error('Incorrect number of arguments.');
+        }
+
+        const queryStatus = parseInt(args[0])
 
         let queryString: any = {}
         queryString.selector = {}
-        queryString.selector.status = 2
+        queryString.selector.docType = UNIVERSITY_CERTIFICATE_PROPOSAL
+        queryString.selector.status = queryStatus
+        let method = thisClass['getQueryResultForQueryString']
+        let queryResults = await method(stub, JSON.stringify(queryString), thisClass)
+        console.log(queryResults)
+        return queryResults
+    }
+
+    /**
+     * Returns attested certificates
+     * @param stub
+     * @param args
+     * @param thisClass
+     */
+    async queryCertificates(stub, args, thisClass) {
+        let queryString: any = {}
+        queryString.selector = {}
+        queryString.selector.docType = UNIVERSITY_CERTIFICATE
+        queryString.selector.status = UniversityCertificateStatus.ATTESTED
         let method = thisClass['getQueryResultForQueryString']
         let queryResults = await method(stub, JSON.stringify(queryString), thisClass)
         console.log(queryResults)

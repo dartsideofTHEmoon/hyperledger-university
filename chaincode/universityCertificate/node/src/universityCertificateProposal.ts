@@ -4,8 +4,10 @@ export class UniversityCertificateProposal {
     universityId: string
     status: UniversityCertificateProposalStatus
     timestamp: string
+    docType: string
 
-    constructor(ownerId: string, fileHash: string, universityId: string, status: UniversityCertificateProposalStatus, timestamp: string) {
+    constructor(docType: string, ownerId: string, fileHash: string, universityId: string, status: UniversityCertificateProposalStatus, timestamp: string) {
+        this.docType = docType;
         this.ownerId = ownerId;
         this.fileHash = fileHash;
         this.universityId = universityId;
@@ -19,3 +21,5 @@ export enum UniversityCertificateProposalStatus {
     TO_BE_VALIDATED = 2,
     REJECTED = 3
 }
+
+export const UNIVERSITY_CERTIFICATE_PROPOSAL = 'universityCertificateProposal'

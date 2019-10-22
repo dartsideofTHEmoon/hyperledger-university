@@ -1,6 +1,10 @@
 import {HttpException, HttpStatus, Injectable, Logger} from "@nestjs/common"
 import {FabricService} from "../fabric/fabric.service"
-import {UNIVERSITY_CERTIFICATE, UniversityCertificateAbi} from "./certificate.contract"
+import {
+    UNIVERSITY_CERTIFICATE,
+    UniversityCertificateAbi,
+    UniversityCertificateProposalStatus
+} from "./certificate.contract"
 
 @Injectable()
 export class CertificateService {
@@ -18,7 +22,7 @@ export class CertificateService {
             const network = await gateway.getNetwork('mychannel')
 
             const contract = network.getContract(UNIVERSITY_CERTIFICATE)
-            const certificateProposals = await contract.evaluateTransaction(UniversityCertificateAbi.queryCertificateProposals)
+            const certificateProposals = await contract.evaluateTransaction(UniversityCertificateAbi.queryCertificateProposalsByStatus, UniversityCertificateProposalStatus.TO_BE_VALIDATED)
 
             const parsedCertificateProposals = JSON.parse(certificateProposals.toString('utf8'))
 
@@ -38,10 +42,8 @@ export class CertificateService {
             const network = await gateway.getNetwork('mychannel')
 
             const contract = network.getContract(UNIVERSITY_CERTIFICATE)
-            const certificateProposals = await contract.submitTransaction(UniversityCertificateAbi.attestCertificate, 'certProposal10', 'cert1')
-            console.log(certificateProposals)
+            const certificateProposals = await contract.submitTransaction(UniversityCertificateAbi.attestCertificate, 'certProposal11', 'losowo')
             const parsedCertificateProposals = JSON.parse(certificateProposals.toString())
-            console.log(parsedCertificateProposals, "dwa")
             await this.fabricService.closeConnection()
             return parsedCertificateProposals
 
