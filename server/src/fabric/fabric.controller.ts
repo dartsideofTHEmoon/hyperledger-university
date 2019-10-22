@@ -1,7 +1,7 @@
-import {Controller, Get, Post, Res} from '@nestjs/common';
+import {Controller, Post, Res} from '@nestjs/common';
 import {Response} from "express";
 import {ValidBody} from "../utils/valid.body";
-import {GenerateCertificateProposal, SendSignedCertificateProposal} from "../../dist/certificate/certificate.dto";
+import {GenerateProposal, SendSignedProposal} from "./fabric.dto";
 import {SendProposalCommit, SendSignedTransaction} from "./fabric.dto";
 import {FabricService} from "./fabric.service";
 
@@ -14,7 +14,7 @@ export class FabricController {
     @Post('/proposal')
     async generateUnsignedProposal(
         @Res() response: Response,
-        @ValidBody() generateTransactionProposal: GenerateCertificateProposal
+        @ValidBody() generateTransactionProposal: GenerateProposal
     ) {
         const {transactionProposal, certificate} = generateTransactionProposal
 
@@ -26,7 +26,7 @@ export class FabricController {
     @Post('/signed-proposal')
     async sendSignedProposal(
         @Res() response: Response,
-        @ValidBody() sendSignedCertificateProposal: SendSignedCertificateProposal
+        @ValidBody() sendSignedCertificateProposal: SendSignedProposal
     ) {
         const {signedProposal} = sendSignedCertificateProposal
 

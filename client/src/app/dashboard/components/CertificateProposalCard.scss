@@ -1,0 +1,43 @@
+.dashboard__modal {
+  background: #fff;
+  position: fixed;
+  overflow: hidden;
+  outline: 0;
+  left: 5%;
+  right: 5%;
+  width: 90%;
+  top: 4%;
+  bottom: 4%;
+  min-height: 92vh;
+  max-height: 92vh;
+  overflow-y: auto;
+}
+
+.loader__modal {
+  background: rgba(0, 0, 0, .6);
+  position: fixed;
+  overflow: hidden;
+  outline: 0;
+  left: 5%;
+  right: 5%;
+  width: 90%;
+  top: 4%;
+  bottom: 4%;
+  min-height: 92vh;
+  max-height: 92vh;
+  overflow-y: auto;
+}
+
+.dashboard__overlay {
+  background-color: rgba(0, 0, 0, .6);
+  z-index: 1100;
+  position: fixed;
+  width: 100%;
+  display: flex;
+  overflow: auto;
+  text-align: center;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}

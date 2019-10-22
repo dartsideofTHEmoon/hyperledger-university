@@ -9,19 +9,13 @@ interface LoginPageProps {
 
 const LoginPage: React.FC<LoginPageProps> = (props) => {
     return (
-        <div className="container">
-            <div className="d-flex justify-content-center align-items-center is-100-height login">
-                <div className="card">
-                    <div className="card-header">
-                        <h3 className="text-white">Sign In</h3>
-                    </div>
-                    <div className="card-body">
+        <div className="min-vh-100 py-5 d-flex align-items-center">
+            <div className="row justify-content-center w-100">
+                <div className=" col-lg-4 card shadow zindex-100 mb-0">
+                    <div className="card-body px-md-5 py-5">
+                        <h6 className="h3">Login</h6>
+                        <p className="text-muted mb-5">Sign in to your account to continue.</p>
                         <LoginForm login={loginApi}/>
-                    </div>
-                    <div className="card-footer">
-                        <div className="d-flex justify-content-center text-white">
-                        ELM demo application
-                        </div>
                     </div>
                 </div>
             </div>

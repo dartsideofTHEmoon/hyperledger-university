@@ -4,4 +4,4 @@ export enum UniversityCertificateAbi {
     attestCertificate = 'attestCertificate'
 }
 
-export const UNIVERSITY_CERTIFICATE = 'universityCertificate'
+export const UNIVERSITY_CERTIFICATE = 'test4'

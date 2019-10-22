@@ -9,8 +9,8 @@ interface HeroProps {
 const Hero: React.FC<HeroProps> = (props) => {
     return (
         <div className={props.className}>
-            <h1 className="display-6 text-white">{props.title}</h1>
-            <p className="lead text-white">{props.content}</p>
+            <h1 className="display-6">{props.title}</h1>
+            <p className="lead">{props.content}</p>
         </div>
     )
 }

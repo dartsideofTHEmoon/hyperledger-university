@@ -27,7 +27,7 @@ export const databaseConfigSchema: Schema<DatabaseConfig> = {
 
     port: {
         doc: "Database connection port",
-        default: 5432,
+        default: 5435,
         format(value: any) {
             if (typeof value !== "number") {
                 throw new Error("must be a number")

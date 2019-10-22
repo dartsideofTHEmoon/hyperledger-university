@@ -9,7 +9,8 @@ import {useEffect, useState} from "react";
 import Footer from "../../layout/components/Footer";
 import CertificateProposalCard from "../components/CertificateProposalCard";
 
-interface DashboardPageProps {}
+interface DashboardPageProps {
+}
 
 const DashboardPage: React.FC<DashboardPageProps> = (props) => {
 
@@ -40,12 +41,12 @@ const DashboardPage: React.FC<DashboardPageProps> = (props) => {
                 <Hero className={`px-3 py-2  mx-auto text-center dashboard-hero`}
                       title={`Certificates for approval`}
                       content={`New certificates waiting to be confirmed.`}/>
-                    <div className="card-deck my-3 text-center">
-                        {certificateProposals && certificateProposals.map((certificateProposal:any) => {
-                            return <CertificateProposalCard certificateProposal={certificateProposal}/>
-                        })}
-                    </div>
-                    <Footer/>
+                <div className="card-deck my-3 text-center">
+                    {certificateProposals && certificateProposals.map((certificateProposal: any) => {
+                        return <CertificateProposalCard certificateProposal={certificateProposal}/>
+                    })}
+                </div>
+                <Footer/>
             </section>
         </React.Fragment>
     )

@@ -111,6 +111,7 @@ export class FabricService {
             const {channel} = await this.configureDefaultChannel()
 
             const proposal: Proposal = await channel.generateUnsignedProposal(transactionProposal, 'Org1MSP', certificate, false)
+            console.log(proposal)
             channel.close()
             return proposal
         } catch (e) {

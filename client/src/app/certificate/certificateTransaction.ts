@@ -9,7 +9,7 @@ export const createAttestCertificateProposal = async (certificateProposalId: str
     const transactionProposal = {
         fcn: 'attestCertificate',
         args: [certificateProposalId, certificateId],
-        chaincodeId: 'universityCertificate',
+        chaincodeId: 'cert2',
         channelId: 'mychannel',
     }
 
@@ -21,4 +21,5 @@ export const signWithPrivateKey = (proposalBytes: any) => {
     const signedProposal = {signature, proposal_bytes: proposalBytes};
     return signedProposal;
 }
+
 

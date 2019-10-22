@@ -1,4 +1,4 @@
-import {Controller, Get, Res} from '@nestjs/common';
+import {Controller, Get, Post, Res} from '@nestjs/common';
 import {CertificateService} from "./certificate.service";
 import {Response} from "express";
 
@@ -15,5 +15,13 @@ export class CertificateController {
         const certificates = await this.certificateService.listCertificateProposals()
 
         response.send({certificates})
+    }
+
+    @Post()
+    async attestCertificate(
+        @Res() response: Response
+    ) {
+        const dupa = await this.certificateService.attestCertificate()
+        response.send({dupa})
     }
 }

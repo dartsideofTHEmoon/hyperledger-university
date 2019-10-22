@@ -2,7 +2,7 @@ import {Shim} from 'fabric-shim';
 import {UniversityCertificate} from "./universityCertificate";
 import {UniversityCertificateProposal, UniversityCertificateProposalStatus} from "./universityCertificateProposal";
 
-export class UniversityCertificateContract {
+const contract = class UniversityCertificateContract {
 
     async Init(stub) {
         console.info(stub.getFunctionAndParameters())
@@ -17,6 +17,7 @@ export class UniversityCertificateContract {
         console.info(ret)
 
         let method = this[ret.fcn]
+        console.log(this, ret.fcn, ret), "tuuu"
         if (!method) {
             console.log('no function of name:' + ret.fcn + ' found')
             throw new Error('Received unknown function ' + ret.fcn + ' invocation')
@@ -35,22 +36,24 @@ export class UniversityCertificateContract {
      * @param stub
      * @param args
      */
-    async attestCertificate(stub, args) {
+    async attestCertificate(stub, args, thisClass) {
         console.info('============= START : Attest Certificate  ===========')
 
-        if (args.length !==2) {
+        if (args.length !== 2) {
             throw new Error('Incorrect number of arguments.')
         }
 
         const certificateProposalId = args[0]
         const certificateId = args[1]
-
+        console.info("tu dziala")
         const certificateProposalAsBytes = await stub.getState(certificateProposalId)
-        let certificateProposal: UniversityCertificateProposal = JSON.parse(certificateProposalAsBytes)
 
-        if (!certificateProposal ) {
-            throw new Error(  ` Certificate proposal does not exists.` );
+        if (!certificateProposalAsBytes.toString()) {
+            throw new Error(` Certificate proposal does not exists.`);
         }
+        console.info("tutaj", certificateProposalAsBytes)
+        let certificateProposal = JSON.parse(certificateProposalAsBytes.toString())
+        console.info(certificateProposal)
 
         //Validate if correct organisation and if fileHash is same as original
         //certificate in university chaincode, if valid create certificate
@@ -65,22 +68,22 @@ export class UniversityCertificateContract {
             new Date().toTimeString()
         )
 
-        await stub.putState(certificateId, Buffer.from(JSON.stringify(universityCertificate)))
+        //await stub.putState(certificateId, Buffer.from(JSON.stringify(universityCertificate)))
 
         certificateProposal.status = UniversityCertificateProposalStatus.VALIDATED
 
-        await stub.putState(certificateProposalId, Buffer.from(JSON.stringify(certificateProposal)));
-
-        console.info('============= END : Attest Certificate ===========')
+        console.log(certificateProposal, "oloo")
+        let proposalAsBytess = Buffer.from(JSON.stringify("dupa"))
+        console.log(certificateProposalId, "pol")
+        return await stub.putState(certificateProposalId, proposalAsBytess)
     }
-
 
     /**
      * Creates new certificate proposal
      * @param stub
      * @param args
      */
-    async createCertificateProposal(stub, args) {
+    async createCertificateProposal(stub, args, thisClass) {
         console.info('============= START : Create Certificate Proposal ===========')
 
         if (args.length !== 4) {
@@ -95,7 +98,7 @@ export class UniversityCertificateContract {
         const universityId = args[3]
         const timestamp = new Date().toTimeString()
 
-        var car = new UniversityCertificateProposal(
+        const universityCertificateProposal = new UniversityCertificateProposal(
             participiantKey,
             fileHash,
             universityId,
@@ -103,7 +106,7 @@ export class UniversityCertificateContract {
             timestamp
         )
 
-        await stub.putState(certificateProposalId, Buffer.from(JSON.stringify(car)));
+        await stub.putState(certificateProposalId, Buffer.from(JSON.stringify(universityCertificateProposal)));
         console.info('============= END : Create Certificate Proposal ===========')
     }
 
@@ -172,4 +175,4 @@ export class UniversityCertificateContract {
     }
 }
 
-Shim.start(new UniversityCertificateContract())
+Shim.start(new contract())

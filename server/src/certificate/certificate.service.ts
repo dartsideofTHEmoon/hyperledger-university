@@ -9,7 +9,8 @@ export class CertificateService {
 
     constructor(
         private readonly fabricService: FabricService
-    ) {}
+    ) {
+    }
 
     async listCertificateProposals() {
         try {
@@ -23,6 +24,25 @@ export class CertificateService {
 
             await this.fabricService.closeConnection()
 
+            return parsedCertificateProposals
+
+        } catch (e) {
+            this.logger.error(e.message)
+            throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR)
+        }
+    }
+
+    async attestCertificate() {
+        try {
+            const gateway = await this.fabricService.connectAsIdentity('notary2@example.com')
+            const network = await gateway.getNetwork('mychannel')
+
+            const contract = network.getContract(UNIVERSITY_CERTIFICATE)
+            const certificateProposals = await contract.submitTransaction(UniversityCertificateAbi.attestCertificate, 'certProposal10', 'cert1')
+            console.log(certificateProposals)
+            const parsedCertificateProposals = JSON.parse(certificateProposals.toString())
+            console.log(parsedCertificateProposals, "dwa")
+            await this.fabricService.closeConnection()
             return parsedCertificateProposals
 
         } catch (e) {
